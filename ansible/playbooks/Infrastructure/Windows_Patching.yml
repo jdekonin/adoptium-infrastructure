@@ -1,0 +1,38 @@
+########################################
+# Infrastructure; Windows_Patching.yml #
+# -------- Windows 7, 8, 10 ---------  #
+# - Windows Server 2008, 2012, 2016  - # 
+########################################
+
+- hosts: all
+  tasks:
+  - block:
+
+    ######################
+    # Load variable file #
+    ######################
+    - name: Load AdoptOpenJDKs variable file
+      include_vars: ../adoptopenjdk_variables_windows.yml
+      
+    ###################
+    # Windows Updates #
+    ###################
+    - name: Reboot machine if necessary
+      win_reboot:
+        shutdown_timeout: 3600
+        reboot_timeout: 3600
+        when: update_result.reboot_required
+      tags: patch_update
+      
+    - name: Download and Install Windows Updates
+      win_updates:
+        register: update_result
+      ignore_errors: yes
+      tags: patch_update
+
+    - name: Reboot machine if necessary
+      win_reboot:
+        shutdown_timeout: 3600
+        reboot_timeout: 3600
+        when: update_result.reboot_required
+      tags: patch_update

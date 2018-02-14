@@ -8,21 +8,10 @@
   tasks:
   - block:
 
-    ######################
-    # Load variable file #
-    ######################
-    - name: Load AdoptOpenJDKs variable file
-      include_vars: ../adoptopenjdk_variables_windows.yml
-      
+    
     ###################
     # Windows Updates #
     ###################
-    - name: Reboot machine if necessary
-      win_reboot:
-        shutdown_timeout: 3600
-        reboot_timeout: 3600
-        when: update_result.reboot_required
-      tags: patch_update
       
     - name: Download and Install Windows Updates
       win_updates:

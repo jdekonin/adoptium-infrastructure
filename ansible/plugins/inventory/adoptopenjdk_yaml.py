@@ -136,7 +136,15 @@ def main():
                         export['_meta']['hostvars'][hostname].update(c)
 
     print(json.dumps(export, indent=2))
+    
+def parse_host(host):
+    """Parses a host and validates it against our naming conventions"""
 
+    hostinfo = dict()
+    info = host.split('-')
+
+
+    return hostinfo
 
 
 

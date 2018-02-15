@@ -106,3 +106,7 @@ hosts:
         lnxarmpirt-ib: {ip: 9.24.248.208}
         lnxarmpirt-ic: {ip: 9.24.248.209}
 
+  - test:
+  
+  - jck:
+

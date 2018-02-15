@@ -6,4 +6,4 @@ hosts:
     - linaro:
         centos74-armv8-1: {ip: 64.28.99.122}
         centos74-armv8-2: {ip: 64.28.99.122, port: 2222}
-        wtf: {ip: 9.28.99.122}
+        wtf-omg: {ip: 9.28.99.122}

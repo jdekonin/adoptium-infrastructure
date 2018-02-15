@@ -6,7 +6,7 @@ hosts:
     - linaro:
         centos74-armv8-1: {ip: 64.28.99.122}
         centos74-armv8-2: {ip: 64.28.99.122, port: 2222}
-        ub14hcxrt2: {ip: 10.20.13.34}
+        brad: {ip: 9.20.13.34}
         
     - ubuntu:
         # (HDC) Hybrid Developer Cloud

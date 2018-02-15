@@ -1,121 +1,66 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-# Copyright Node.js contributors. All rights reserved.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to
-# deal in the Software without restriction, including without limitation the
-# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-# IN THE SOFTWARE.
-#
-
-from ansible.module_utils.basic import *
-from jinja2 import Environment, Template, filters
-import os
-import re
-
-pre_match = '# begin: adoptopenjdk template'
-post_match = '# end: adoptopenjdk template'
-match = re.compile(r'^' + re.escape(pre_match) + '(.*)' + re.escape(post_match),
-                   flags=re.DOTALL | re.MULTILINE)
-
-replace_ssh_args = {
-    '-o ': '',
-    '\'': '',
-    '=': ' '
-}
-
-host_template = \
-    '''
-{%- for host, metadata in hosts|dictsort -%}
-{%- if metadata.ansible_host and not metadata.is_win -%}
-{%- set ssh_arg = metadata.ansible_ssh_common_args %}
-Host {{ host }} {{ metadata.alias }}
-  HostName {{ metadata.ansible_host }}
-  IdentityFile {{ metadata.ansible_ssh_private_key_file }}
-  User {{ metadata.ansible_user or 'root' }}
-{{
-  '  Port ' + metadata.ansible_port + '\n' if metadata.ansible_port
-}}{{
-  '  ' + ssh_arg|multi_replace(args) + '\n' if ssh_arg
-}}
- {%- endif -%}
-{%- endfor -%}
-'''
-
-
-def multi_replace(content, to_replace):
-    for key, val in to_replace.iteritems():
-        content = content.replace(key, val)
-    return content
-
-
-def is_templatable(path, config):
-    return os.path.exists(path) and bool(re.search(match, config))
-
-
-def render_template(hosts):
-    render = Environment()
-    render.filters['multi_replace'] = multi_replace
-    return render.from_string(host_template).render(hosts=hosts,
-                                                    args=replace_ssh_args)
+import json
+import socket
+import subprocess
 
 
 def main():
-    module = AnsibleModule(
-        argument_spec={
-            'path': {
-                'required': True,
-                'type': 'str',
+      inventory_path = path.abspath(path.join(basepath, "..", "..", "inventory.yml"))
+    with open(inventory_path, 'r') as stream:
+        try:
+            hosts = yaml.load(stream)
+
+        except yaml.YAMLError as exc:
+            print(exc)
+        finally:
+            stream.close()
+            
+    print(json.dumps(inventory(), sort_keys=True, indent=2))
+
+
+def inventory():
+    ip_address = find_pi()
+
+    return {
+        'all': {
+            'hosts': [ip_address],
+            'vars': {},
+        },
+        '_meta': {
+            'hostvars': {
+                ip_address: {
+                    'ansible_ssh_user': 'pi',
+                }
             },
-            'hostinfo': {
-                'required': True,
-                'type': 'dict',
-            }
-        }
-    )
+        },
+        'pi': [ip_address]
+    }
 
-    path = os.path.expanduser(module.params['path'])
 
-    try:
-        with open(path, 'r') as f:
-            contents = f.read()
-        f.close()
-    except IOError:
-        module.fail_json(msg='Couldn\'t find a ssh config at %s' %
-                         path)
+def find_pi():
+    for ip in all_local_ips():
+        if port_22_is_open(ip):
+            return ip
 
-    if not is_templatable(path, contents):
-        module.fail_json(msg='Your ssh config lacks template stubs. ' +
-                             'Check README.md for instructions.')
 
-    rendered = '{}{}{}'.format(
-        pre_match,
-        render_template(module.params['hostinfo']),
-        post_match
-    )
+def all_local_ips():
+    lines = subprocess.check_output(['arp', '-a']).split('\n')
+    for line in lines:
+        if '(' not in line:
+            continue
+        after_open_bracket = line.split('(')[1]
+        ip = after_open_bracket.split(')')[0]
+        yield ip
 
-    try:
-        with open(path, 'w+') as f:
-            f.write(match.sub(rendered, contents))
-        f.close()
-    except IOError:
-        module.fail_json(msg='Couldn\'t write to ssh config. Check permissions')
 
-    module.exit_json(changed=True, meta='Updated %s successfully' % path)
+def port_22_is_open(ip):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex((ip, 22))
+    return result == 0
 
 
 if __name__ == '__main__':

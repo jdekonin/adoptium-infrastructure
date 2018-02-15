@@ -1,91 +1,108 @@
 ---
-
-#
-# AdoptOpenJDK hosts! check the readme on how to add more
-# (if its not obvious enough).
-#
-
 hosts:
 
   - build:
+    
+    - Ubuntu:
+        # (HDC) Hybrid Developer Cloud
+        ub16hcxrt1: {ip: 10.20.12.109} 
+        ub16hcxrt2: {ip: 10.20.13.34}
+        ub14hcxrt1: {ip: 10.20.12.110}
+        ub14hcxrt2: {ip: 10.20.13.34}
 
-    - cloudcone:
-        ubuntu1604-x64-1: {ip: 173.82.219.221}
+        # PPC64LE OpenPower KVM
+        ub14lert1: {ip: 9.26.194.57}
+        ub14lert2: {ip: 9.26.194.58}
+        ub14lert3: {ip: 9.26.194.59}
+        ub14lert4: {ip: 9.26.194.6}
+        ub14lert5: {ip: 9.26.194.60}
+        ub16lert1: {ip: 9.26.194.246}
+        ub16lert2: {ip: 9.26.194.247}
+        ub16lert3: {ip: 9.26.194.248}
+        ub16lert4: {ip: 9.26.194.125}
+        ub16lert5: {ip: 9.26.194.124}
 
-    - 1and1:
-        win2008r2-x64-1: {ip: 109.228.48.187, user: Administrator}
+        # Physical Hardware
+        ub14x64cudart1: {ip: 9.24.248.175} # NVidia Cuda
 
-    - linaro:
-        centos74-armv8-1: {ip: 64.28.99.122}
-        centos74-armv8-2: {ip: 64.28.99.122, port: 2222}
+        # (CSDC) Canada Shared Developers Cloud
+        csz25059: {ip: 9.23.30.59} # z/Linux Ubuntu 16
 
-    - macstadium:
-        macos1010-x64-1: {ip: 207.254.50.138, user: Administrator}
-        macos1010-x64-2: {ip: 208.83.1.242, user: Administrator}
+    - SLES:
+        # (HDC) Hybrid Developer Cloud
+        sles12hcxrt1: {ip: 10.20.13.38} 
+        sles12hcxrt2: {ip: 10.20.13.39} 
+        sles11hcxrt1: {ip: 10.20.13.40} 
+        sles11hcxrt2: {ip: 10.20.13.41} 
+        
+        # PPC64LE OpenPower KVM
+        sles11p7rt1: {ip: 9.24.213.162}
+        sles11p7rt2: {ip: 9.24.213.174}
 
-    - marist:
-        sles12-s390x-1: {ip: 148.100.110.56}
-        ubuntu1604-s390x-1: {ip: 148.100.33.147}
-        ubuntu1604-s390x-2: {ip: 148.100.33.178}
-        ubuntu1604-s390x-3: {ip: 148.100.33.179}
-        zos21-s390x-1: {ip: 148.100.36.136, user: OPEN1}
-        zos21-s390x-2: {ip: 148.100.36.137, user: OPEN1}
+        # (CSDC) Canada Shared Developers Cloud
+        csz25056: {ip: 9.23.30.56} # z/Linux SLES 12
 
-    - osuosl:
-        centos72-ppc64le-1: {ip: 140.211.168.138, user: centos}
-        fedora24-ppc64le-1: {ip: 140.211.168.134, user: fedora}
-        ubuntu1710-ppc64le-1: {ip: 140.211.168.135, user: ubuntu}
-        aix71-ppc64-1: {ip: 140.211.9.10}
-        aix71-ppc64-2: {ip: 140.211.9.12}
+    - RHEL:
+        # (HDC) Hybrid Developer Cloud
+        rhel6hcxrt1: {ip: 10.20.12.114}
+        rhel6hcxrt2: {ip: 10.20.13.42}
+        rhel7hcxrt1: {ip: 10.20.12.113}
+        rhel7hcxrt2: {ip: 10.20.13.33]
 
-    - packet:
-        ubuntu1604-armv8-1: {ip: 147.75.196.30}
-        ubuntu1604-armv8-2: {ip: 147.75.77.146}
-        freebsd11-x64-1: {ip: 147.75.101.29}
+        # PPC BE LDAP
+        rhel6p7rt1: {ip: 9.24.212.142}
+        rhel6p7rt2: {ip: 9.24.212.143}
+        rhel6p7rt3: {ip: 9.24.212.164}
+        rhel6p7rt4: {ip: 9.24.213.135}
+        rhel6p7rt5: {ip: 9.24.213.136}
 
-    - joyent:
-        ubuntu1604-x64-2: {ip: 37.153.109.201}
+        # PPC64LE OpenPower KVM
+        rhel7lert1: {ip: 9.26.192.165}
+        rhel7lert2: {ip: 9.26.194.63}
+        rhel7lert3: {ip: 9.26.194.64}
+        rhel7lert4: {ip: 9.26.194.65}
+        rhel7lert5: {ip: 9.26.194.66}
 
-    - scaleway:
-        ubuntu1604-x64-2: {ip: 51.15.46.107}
-        ubuntu1604-armv7-1: {ip: 212.47.233.28}
-        ubuntu1604-armv7-2: {ip: 212.47.246.7}
+        # PPC BE LDAP
+        rhel7p7rt1: {ip: 9.23.16.247}
+        rhel7p8rt2: {ip: 9.26.194.252}
+        rhel7p8rt3: {ip: 9.26.194.253}
+        rhel7p8rt4: {ip: 9.26.194.254}
+        rhel7p8rt5: {ip: 9.26.194.255}
 
-    - softlayer:
-        win2012r2-x64-1: {ip: 37.58.103.195, user: Administrator}
-        win2012r2-x64-2: {ip: 37.58.103.196, user: Administrator}
+        # Physical Hardware
+        rhel7x64cudart1: {ip: 9.24.248.182} # NVidia Cuda
 
-  - test:
+        # (CSDC) Canada Shared Developers Cloud
+        csz25086: {ip: 9.23.30.86} # z/Linux RHEL 7
+        
+    - Windows:
+        # (HDC) Hybrid Developer Cloud
+        win7x64rt1: {ip: 9.28.161.140}
+        win7x64rt2: {ip: 9.28.161.154}
+        win8x64rt1: {ip: 9.28.161.162}
+        win8x64rt2: {ip: 9.28.161.155}
+        win10x64rt1: {ip: 9.28.162.183}
+        win10x64rt2: {ip: 9.28.161.153}
+        win2008x64rt1: {ip: 9.28.162.180}
+        win2008x64rt2: {ip: 9.28.161.152}
+        win2012x64rt1: {ip: 9.28.162.179}
+        win2012x64rt2: {ip: 9.28.161.150}
+        win2016x64rt1: {ip: 9.28.162.178}
+        win2016x64rt2: {ip: 9.28.161.15}
 
-    - osuosl:
-        ubuntu1604-ppc64le-1: {ip: 140.211.168.227, user: ubuntu}
-        ubuntu1604-ppc64le-2: {ip: 140.211.168.190, user: ubuntu}
+    - Raspbian:
+        # Physical Hardware - Raspberry Pi 2
+        lnxarmpirt-i1: {ip: 9.24.248.198}
+        lnxarmpirt-i2: {ip: 9.24.248.199}
+        lnxarmpirt-i3: {ip: 9.24.248.200}
+        lnxarmpirt-i4: {ip: 9.24.248.201}
+        lnxarmpirt-i5: {ip: 9.24.248.202}
+        lnxarmpirt-i6: {ip: 9.24.248.203}
+        lnxarmpirt-i7: {ip: 9.24.248.204}
+        lnxarmpirt-i8: {ip: 9.24.248.205}
+        lnxarmpirt-i9: {ip: 9.24.248.206}
+        lnxarmpirt-ia: {ip: 9.24.248.207}
+        lnxarmpirt-ib: {ip: 9.24.248.208}
+        lnxarmpirt-ic: {ip: 9.24.248.209}
 
-    - packet:
-        ubuntu1604-armv8-1: {ip: 147.75.74.50}
-        ubuntu1604-x64-1: {ip: 147.75.204.239}
-        win2012r2-x64-1: {ip: 147.75.101.30, user: Admin}
-
-    - macincloud:
-        macos1010-x64-1: {ip: 74.80.250.151, user: admin}
-        macos1010-x64-2: {ip: 74.80.250.173, user: admin}
-
-    - scaleway:
-        ubuntu1604-x64-1: {ip: 51.15.76.107}
-
-  - jck:
-
-    - macstadium:
-        macos1010-x64-1: {ip: 207.254.71.30, user: Administrator}
-        macos1010-x64-2: {ip: 207.254.71.31, user: Administrator}
-
-    - osuosl:
-        ubuntu1604-ppc64le-1: {ip: 140.211.168.225, user: ubuntu}
-        ubuntu1604-ppc64le-2: {ip: 140.211.168.217, user: ubuntu}
-
-    - packet:
-        ubuntu1604-armv8-1: {ip: 147.75.193.234}
-
-    - softlayer:
-        ubuntu1604-x64-1: {ip: 159.122.210.205}
-        ubuntu1604-x64-2: {ip: 159.122.210.194}

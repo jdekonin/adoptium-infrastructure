@@ -39,7 +39,7 @@ from os import path
 
 valid = {
   # taken from nodejs/node.git: ./configure
-  'arch': ('*'),
+  'arch': ('armv7', 'armv8', 'ppc64le', 'ppc64', 'x64', 's390x'),
 
   # valid roles - add as necessary
   'type': ('build', 'test', 'jck'),
@@ -152,19 +152,7 @@ def parse_host(host):
     """Parses a host and validates it against our naming conventions"""
 
     hostinfo = dict()
-    info = host.split('-')
 
-    expected = ['type', 'provider', 'os', 'arch', 'uid']
-
-    if len(info) is not 5:
-        raise Exception('Host format is invalid: %s,' % host)
-
-    for key, item in enumerate(expected):
-        hostinfo[item] = has_metadata(info[key])
-
-    for item in ['type', 'provider', 'arch']:
-        if hostinfo[item] not in valid[item]:
-            raise Exception('Invalid %s: %s' % (item, hostinfo[item]))
 
     return hostinfo
 

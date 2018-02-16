@@ -5,6 +5,7 @@
 ########################################
 
 - hosts: all
+  strategy: free 
   tasks:
   - block:
 

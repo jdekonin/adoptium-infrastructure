@@ -13,14 +13,20 @@
     ###################
     # Windows Updates #
     ###################
-      
+     - name: Reboot machine if necessary round 1
+      win_reboot:
+        shutdown_timeout: 3600
+        reboot_timeout: 3600
+        when: update_result.reboot_required
+      tags: patch_update
+ 
     - name: Download and Install Windows Updates
       win_updates:
         register: update_result
       ignore_errors: yes
       tags: patch_update
 
-    - name: Reboot machine if necessary
+    - name: Reboot machine if necessary round 2
       win_reboot:
         shutdown_timeout: 3600
         reboot_timeout: 3600

@@ -1,0 +1,171 @@
+---
+########################################################
+# backup gcc, g++ c++ v4.4 and create symlinks to v4.8 #
+#
+# Run this after 
+########################################################
+- name: Check if gcc-4.8 symlink exists on x86_64 RedHat 6
+  stat:
+    path: /usr/bin/gcc-4.8
+  register: gcc_48_status
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Check if gcc-4.4 is available on x86_64 RedHat 6
+  stat:
+    path: /usr/bin/gcc-4.4
+  register: gcc_44_status
+  when:
+    - gcc_48_status.stat.islink is defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Rename gcc to gcc-4.4
+  copy:
+    src: /usr/bin/gcc
+    dest: /usr/bin/gcc-4.4
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+  when:
+    - gcc_48_status.stat.islink is defined
+    - gcc_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Remove gcc 
+  file: path=/usr/bin/gcc state=absent
+  when:
+    - gcc_48_status.stat.islink is defined
+    - gcc_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Create symlink for gcc
+  file:
+    src: /usr/bin/gcc-4.8
+    dest: /usr/bin/gcc
+    owner: root
+    group: root
+    state: link
+  when:
+    - gcc_48_status.stat.islink is defined
+    - gcc_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Check if g++-4.4 is available on x86_64 RedHat 6
+  stat:
+    path: /usr/bin/g++-4.4
+  register: g++_44_status
+  when:
+    - gcc_48_status.stat.islink is defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Rename g++ to g++-4.4
+  copy:
+    src: /usr/bin/g++
+    dest: /usr/bin/g++-4.4
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+  when:
+    - gcc_48_status.stat.islink is defined
+    - g++_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Remove g++ 
+  file: path=/usr/bin/g++ state=absent
+  when:
+    - gcc_48_status.stat.islink is defined
+    - g++_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Create symlink for g++
+  file:
+    src: /usr/bin/g++-4.8
+    dest: /usr/bin/g++
+    owner: root
+    group: root
+    state: link
+  when:
+    - gcc_48_status.stat.islink is defined
+    - g++_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Check if c++-4.4 is available on x86_64 RedHat 6
+  stat:
+    path: /usr/bin/c++-4.4
+  register: c++_44_status
+  when:
+    - gcc_48_status.stat.islink is defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Rename c++ to c++-4.4
+  copy:
+    src: /usr/bin/c++
+    dest: /usr/bin/c++-4.4
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+  when:
+    - gcc_48_status.stat.islink is defined
+    - c++_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Remove c++ 
+  file: path=/usr/bin/c++ state=absent
+  when:
+    - gcc_48_status.stat.islink is defined
+    - c++_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8
+
+- name: Create symlink for c++
+  file:
+    src: /usr/bin/c++-4.8
+    dest: /usr/bin/c++
+    owner: root
+    group: root
+    state: link
+  when:
+    - gcc_48_status.stat.islink is defined
+    - c++_44_status.stat.islink is not defined
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: gcc-4.8

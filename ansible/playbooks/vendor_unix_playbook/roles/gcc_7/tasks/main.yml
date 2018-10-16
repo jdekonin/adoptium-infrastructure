@@ -1,0 +1,114 @@
+---
+###########
+# gcc-7.3 #
+###########
+
+# Install devtoolset-7 on RHEL 6 x86-64
+
+- name: Check if devtoolset-7 is installed on RHEL6 x86-64
+  stat:
+    path: /opt/rh/devtoolset-7
+  register: devtoolset7_installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: vendor_gcc_7
+
+- name: Check if devtools-7.repo exists
+  stat:
+    path: /etc/yum.repos.d/devtools-7.repo
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "x86_64"
+    - devtoolset7_installed.stat.exists == False
+  register: devtoolset7_repo_installed
+  tags: gcc-7
+
+# work-around: use the CentOS scl repos on RHEL x86_64
+# create a file /etc/yum.repos.d/devtools-7.repo with the following content:
+#------------------------------
+#[devtoolset-7]
+#name=CentOS-6 - SCLo rh
+#baseurl=http://mirror.centos.org/centos/6/sclo/$basearch/rh/
+#gpgcheck=0
+#enabled=1
+#------------------------------
+- name: Add devtools-7 to yum repo
+  copy:
+    dest: /etc/yum.repos.d/devtools-7.repo
+    content: |
+      [devtoolset-7]
+      name=CentOS-6 - SCLo rh
+      baseurl=http://mirror.centos.org/centos/{{ ansible_distribution_major_version }}/sclo/{{ ansible_architecture }}/rh/
+      gpgcheck=0
+      enabled=1
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "x86_64"
+    - devtoolset7_installed.stat.exists == False
+    - devtoolset7_repo_installed.stat.exists == False
+  tags: vendor_gcc_7
+
+- name: Install devtoolset-7 packages
+  yum:
+    name: devtoolset-7-gcc-c++
+  state: installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "x86_64"
+    - devtoolset7_installed.stat.exists == False
+  tags: vendor_gcc_7
+
+# Install at11 (IBMAdvanced Tools) on RHEL7 PPCLE
+
+- name: Check if IBMAdvanced Tools 11 is installed on RHEL7 PPCLE
+  stat:
+    path: /opt/at11.0
+  register: at11_installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "ppc64le"
+    - ansible_distribution_major_version == "7"
+  tags: vendor_gcc_7
+
+- name: Check if att11.0.repo exists
+  stat:
+    path: /etc/yum.repos.d/at11.0.repo
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "ppc64le"
+    - ansible_distribution_major_version == "7"
+    - at11_installed.stat.exists == False
+  register: att11_repo_installed
+  tags: vendor_gcc_7
+
+- name: Add att11 to yum repo
+  get_url:
+    url: "ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/redhat/RHEL7"
+    dest: /etc/yum.repos.d/at11.0.repo
+    timeout: 25
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "ppc64le"
+    - ansible_distribution_major_version == "7"
+    - at11_installed.stat.exists == False
+    - att11_repo_installed.stat.exists == False
+  tags: vendor_gcc_7
+
+- name: Install att11.0 packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - environment-modules
+      - advance-toolchain-at11.0-runtime
+      - advance-toolchain-at11.0-devel
+      - advance-toolchain-at11.0-perf
+  state: installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "ppc64le"
+    - ansible_distribution_major_version == "7"
+    - at11_installed.stat.exists == False
+  tags: vendor_gcc_7

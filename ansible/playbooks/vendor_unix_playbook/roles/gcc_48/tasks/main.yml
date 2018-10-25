@@ -1,0 +1,68 @@
+---
+###########
+# gcc 4.8 #
+###########
+# Install devtoolset-2 on RHEL 6 x86-64
+
+- name: Check if devtoolset-2 is installed on RHEL6 x86-64
+  stat:
+    path: /opt/rh/devtoolset-2
+  register: devtoolset2_installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+  tags: vendor_gcc_48
+
+- name: Check if devtools-2.repo exists
+  stat:
+    path: /etc/yum.repos.d/devtools-2.repo
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "x86_64"
+    - devtoolset2_installed.stat.exists == False
+  register: devtoolset2_repo_installed
+  tags: gcc-7
+
+- name: Add devtools-2 to yum repo
+  get_url:
+    url: https://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
+    dest: /etc/yum.repos.d/slc6-devtoolset.repo
+    timeout: 25
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - devtoolset2_installed.stat.exists == False
+    - devtoolset2_repo_installed.stat.exists == False
+  tags: vendor_gcc_48
+
+- name: Disable repository GPG key check
+  replace:
+    path: /etc/yum.repos.d/slc6-devtoolset.repo
+    regexp: 'gpgcheck=1'
+    replace: 'gpgcheck=0'
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - devtoolset2_installed.stat.exists == False
+    - devtoolset2_repo_installed.stat.exists == False
+  tags: vendor_gcc_48
+
+- name: Install devtoolset-2 packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - devtoolset-2-gcc
+      - devtoolset-2-binutils
+      - devtoolset-2-gcc-c++
+  state: installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - devtoolset2_installed.stat.exists == False
+  tags: vendor_gcc_48

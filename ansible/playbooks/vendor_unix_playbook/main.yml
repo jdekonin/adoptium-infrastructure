@@ -1,0 +1,22 @@
+---
+###################
+# Vendor playbook #
+###################
+
+# Contains all of the OpenJ9 specific tasks
+# must run after the AdoptOpenJDK playbooks
+# To enable it set the following variables when running the Unix playbook:
+#    Vendor_File=Enabled
+#    Vendor_Playbook=/path/to/infra-can/ansible/playbooks/vendor_unix_playbook/main
+# Usage:
+#   ansible-playbook -e "Vendor_File=Enabled" -e "Vendor_Playbook=/path/to/infra-can/ansible/playbooks/vendor_unix_playbook/main /path/to/infra-can/ansible/playbooks/AdoptOpenJDK_Unix_Playbook/main.yml"
+
+- name: Set vendor_playbook_basedir
+  shell: dirname "{{ Vendor_Playbook }}.yml"
+  register: vendor_playbook_basedir
+
+- debug: var=vendor_playbook_basedir.stdout
+
+- include_tasks: "{{ vendor_playbook_basedir.stdout }}/roles/gcc_48/tasks/main.yml"
+- include_tasks: "{{ vendor_playbook_basedir.stdout }}/roles/gcc_7/tasks/main.yml"
+- include_tasks: "{{ vendor_playbook_basedir.stdout }}/roles/NVidia_Cuda_Toolkit/tasks/main.yml"

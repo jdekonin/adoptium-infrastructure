@@ -1,0 +1,46 @@
+---
+###################################
+# AdoptOpenJDK - Ansible Playbook #
+###################################
+- hosts: all
+  gather_facts: yes
+  tasks:
+    - block:
+      # Set standard variables
+        - name: Load IBM variable file
+          include_vars: group_vars/all/ibm_variables.yml
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+
+  #########
+  # Roles #
+  #########
+  roles:
+    - gcc_7
+    - NVidia_Cuda_Toolkit_75
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Debug
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Version
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Common
+    - ../AdoptOpenJDK_Unix_Playbook/roles/autoconf
+    - ../AdoptOpenJDK_Unix_Playbook/roles/curl
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Jenkins_User                # AdoptOpenJDK Infrastructure
+    - ../AdoptOpenJDK_Unix_Playbook/roles/freemarker                  # OpenJ9
+    - ../AdoptOpenJDK_Unix_Playbook/roles/ant                         # Testing
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Ant-Contrib                 # Testing
+    - ../AdoptOpenJDK_Unix_Playbook/roles/GIT_Source
+    - ../AdoptOpenJDK_Unix_Playbook/roles/CPAN
+    - ../AdoptOpenJDK_Unix_Playbook/roles/cmake                       # OpenJ9 / OpenJFX
+    - ../AdoptOpenJDK_Unix_Playbook/roles/gmake
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Docker                      # Testing
+    - ../AdoptOpenJDK_Unix_Playbook/roles/NVidia_Cuda_Toolkit         # OpenJ9
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Swap_File
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Crontab
+    - ../AdoptOpenJDK_Unix_Playbook/roles/NTP_TIME
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Python3_Source
+    - ../AdoptOpenJDK_Unix_Playbook/roles/ccache
+    - {role: ../AdoptOpenJDK_Unix_Playbook/roles/nasm, when: ansible_architecture == 'x86_64'} # OpenJ9
+    - ../AdoptOpenJDK_Unix_Playbook/roles/adoptopenjdk11              # JDK12 build bootstrap
+    - ../AdoptOpenJDK_Unix_Playbook/roles/adoptopenjdk12              # JDK13 build bootstrap
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Protobuf
+    - ../AdoptOpenJDK_Unix_Playbook/roles/OpenSSL102                  # OpenJ9
+    - ../AdoptOpenJDK_Unix_Playbook/roles/Clean_Up

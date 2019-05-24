@@ -12,7 +12,7 @@
   when:
     - (ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "14") or (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
     - ansible_architecture == "x86_64"
-  tags: vendor_nvidia_cuda_toolkit
+  tags: nvidia_cuda_toolkit_75
 
 - name: Download NVidia CUDA 7.5 toolkit
   get_url:
@@ -23,7 +23,7 @@
     - (ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "14") or (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
     - ansible_architecture == "x86_64"
     - cuda75_installed.stat.exists == False
-  tags: vendor_nvidia_cuda_toolkit
+  tags: nvidia_cuda_toolkit_75
 
 - name: Install NVidia CUDA 7.5 toolkit
   shell: sh /tmp/cuda_75_linux-run --silent --toolkit --override
@@ -31,7 +31,7 @@
     - (ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "14") or (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
     - ansible_architecture == "x86_64"
     - cuda75_installed.stat.exists == False
-  tags: vendor_nvidia_cuda_toolkit
+  tags: nvidia_cuda_toolkit_75
 
 - name: Clean up downloaded packages
   file:
@@ -44,4 +44,4 @@
     - ansible_architecture == "x86_64"
     - cuda75_installed.stat.exists == False
   ignore_errors: yes
-  tags: vendor_nvidia_cuda_toolkit
+  tags: nvidia_cuda_toolkit_75

@@ -1,0 +1,19 @@
+---
+##########################
+# ibm_variables #
+##########################
+
+Domain: IBM
+Jenkins_Username: jenkins
+Jenkins_User_SSHKey: /Vendor_Files/jenkins/id_rsa.pub
+bootjdk: openj9
+
+Jenkins_Win_Passwd: /Vendor_Files/jenkins/jenkins_win_passwd
+Nagios_Monitoring: Disabled
+Nagios_Plugins: Disabled
+Security: Disabled
+Slack_Notification: Disabled
+Superuser_Account: Disabled
+ansible_connection: ssh
+ansible_port: 22
+

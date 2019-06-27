@@ -48,67 +48,18 @@
     - ansible_architecture == "x86_64"
     - devtoolset7_installed.stat.exists == False
     - devtoolset7_repo_installed.stat.exists == False
-  tags: vendor_gcc_7
+  tags: gcc_7
 
 - name: Install devtoolset-7 packages
   yum:
     name: devtoolset-7-gcc-c++
-  state: installed
+    state: installed
   when:
     - ansible_distribution == "RedHat"
     - ansible_architecture == "x86_64"
     - devtoolset7_installed.stat.exists == False
-  tags: vendor_gcc_7
+  tags: gcc_7
 
-# Install at11 (IBMAdvanced Tools) on RHEL7 PPCLE
-
-- name: Check if IBMAdvanced Tools 11 is installed on RHEL7 PPCLE
-  stat:
-    path: /opt/at11.0
-  register: at11_installed
-  when:
-    - ansible_distribution == "RedHat"
-    - ansible_architecture == "ppc64le"
-    - ansible_distribution_major_version == "7"
-  tags: vendor_gcc_7
-
-- name: Check if att11.0.repo exists
-  stat:
-    path: /etc/yum.repos.d/at11.0.repo
-  when:
-    - ansible_distribution == "RedHat"
-    - ansible_architecture == "ppc64le"
-    - ansible_distribution_major_version == "7"
-    - at11_installed.stat.exists == False
-  register: att11_repo_installed
-  tags: vendor_gcc_7
-
-- name: Add att11 to yum repo
-  get_url:
-    url: "ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/redhat/RHEL7"
-    dest: /etc/yum.repos.d/at11.0.repo
-    timeout: 25
-  when:
-    - ansible_distribution == "RedHat"
-    - ansible_architecture == "ppc64le"
-    - ansible_distribution_major_version == "7"
-    - at11_installed.stat.exists == False
-    - att11_repo_installed.stat.exists == False
-  tags: vendor_gcc_7
-
-- name: Install att11.0 packages
-  yum:
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - environment-modules
-      - advance-toolchain-at11.0-runtime
-      - advance-toolchain-at11.0-devel
-      - advance-toolchain-at11.0-perf
-  state: installed
-  when:
-    - ansible_distribution == "RedHat"
-    - ansible_architecture == "ppc64le"
-    - ansible_distribution_major_version == "7"
-    - at11_installed.stat.exists == False
-  tags: vendor_gcc_7
+- lineinfile:
+    path: ~/.bashrc
+    line: 'source /opt/rh/devtoolset-7/enable'

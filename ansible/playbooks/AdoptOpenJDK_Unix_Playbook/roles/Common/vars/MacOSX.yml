@@ -7,8 +7,10 @@
 
 Build_Tool_Packages:
   - autoconf
+  - bash # OpenJ9 needs bash v4 or later
   - coreutils
   - gnu-tar
+  - nasm # openj9 jdk13+
   - wget
 
 Build_Tool_Casks:

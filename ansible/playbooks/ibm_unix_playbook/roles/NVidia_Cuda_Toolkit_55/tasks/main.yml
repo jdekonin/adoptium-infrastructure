@@ -1,9 +1,8 @@
 ---
 ###################
 # NVidia CUDA 5.5 #
+# GDK 7.5 #
 ###################
-
-# Install CUDA 5.5 on RedHat 6 | 7 and CentOS 6 | 7 x86-64
 
 - name: Check if NVidia CUDA 5.5 toolkit is aready installed
   stat:
@@ -26,12 +25,42 @@
   tags: nvidia_cuda_toolkit_55
 
 - name: Install NVidia CUDA 5.5 toolkit
-  shell: sh /tmp/cuda_55_linux-run --silent --toolkit --override
+  shell: /tmp/cuda_55_linux-run --silent --toolkit --override
   when:
     - ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
     - ansible_architecture == "x86_64"
     - cuda55_installed.stat.exists == False
   tags: nvidia_cuda_toolkit_55
+
+- name: Check if GDK 7.5 is aready installed
+  stat:
+      path: /usr/bin/nvvs
+      register: gdk75_installed
+  when:
+    - ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
+    - ansible_architecture == "x86_64"
+  tags: gdk_75_package
+
+- name: Download GDK 7.5 package
+  get_url:
+    url: http://developer.download.nvidia.com/compute/cu    da/7.5/Prod/gdk/gdk_linux_amd64_352_55_release.run 
+run
+    dest: '/tmp/gdk_linux_amd64_352_55_release.run'
+    mode: u+x
+    timeout: 600
+  when:
+    - ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
+    - ansible_architecture == "x86_64"
+    - gdk75_installed.stat.exists == False
+  tags: gdk_75_package
+
+- name: Install GDK 7.5 package
+  shell:  /tmp/gdk_linux_amd64_352_55_release.run --silent
+  when:
+    - ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
+    - ansible_architecture == "x86_64"
+    - gdk75_installed.stat.exists == False
+  tags: gdk_75_package
 
 - name: Clean up downloaded packages
   file:
@@ -39,9 +68,12 @@
     state: absent
   with_items:
     - /tmp/cuda_55_linux-run
+    - /usr/bin/nvvs
   when:
     - ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
     - ansible_architecture == "x86_64"
-    - cuda55_installed.stat.exists == False
+    - cuda55_installed.stat.exists == False or gdk75_installed.stat.exists == False
   ignore_errors: yes
-  tags: nvidia_cuda_toolkit_55
+  tags: 
+    [ nvidia_cuda_toolkit_55, gdk_75_package ]
+

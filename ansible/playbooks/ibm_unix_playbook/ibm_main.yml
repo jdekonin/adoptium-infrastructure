@@ -17,7 +17,7 @@
   #########
   roles:
     - gcc_7
-    - NVidia_Cuda_Toolkit_75
+    - NVidia_Cuda_Toolkit_55
     - Java8
     - ../AdoptOpenJDK_Unix_Playbook/roles/Debug
     - ../AdoptOpenJDK_Unix_Playbook/roles/Version

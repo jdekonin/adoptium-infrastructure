@@ -1,0 +1,113 @@
+---
+###################
+# NVidia CUDA 5.5 #
+# GDK 7.5 #
+###################
+   
+- name: Check if NVidia CUDA 5.5 toolkit is aready installed
+  stat:
+      path: /usr/local/cuda-5.5
+  register: cuda55_installed
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+  tags: nvidia_cuda_toolkit_55
+
+- name: Download NVidia CUDA 5.5 toolkit
+  get_url:
+    url: http://developer.download.nvidia.com/compute/cuda/5_5/rel/installers/cuda_5.5.22_linux_64.run
+    dest: '/tmp/cuda_55_linux-run'
+    mode: u+x
+    timeout: 600
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - cuda55_installed.stat.exists == False
+  tags: nvidia_cuda_toolkit_55
+
+- name: Install NVidia CUDA 5.5 toolkit
+  shell: /tmp/cuda_55_linux-run --silent --toolkit --override
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - cuda55_installed.stat.exists == False
+  tags: nvidia_cuda_toolkit_55
+
+- name: Check if GDK 7.5 is aready installed
+  stat:
+      path: /usr/bin/nvvs
+  register: gdk75_installed
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+  tags: gdk_75_package
+
+- name: Download GDK 7.5 package
+  get_url:
+    url: http://developer.download.nvidia.com/compute/cuda/7.5/Prod/gdk/gdk_linux_amd64_352_55_release.run
+    dest: '/tmp/gdk_linux_amd64_352_55_release.run'
+    mode: u+x
+    timeout: 600
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - gdk75_installed.stat.exists == False
+  tags: gdk_75_package
+
+- name: Install GDK 7.5 package
+  shell:  /tmp/gdk_linux_amd64_352_55_release.run --silent
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - gdk75_installed.stat.exists == False
+  tags: gdk_75_package
+
+- name: Check if the linker search paths contains /usr/local/cuda-5.5
+  shell: ldconfig -p | grep /usr/local/cuda-5.5
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+  register: linker_search_path
+  ignore_errors: yes
+  tags: cuda_55_config
+
+- name: Create/update /etc/ld.so.conf.d/cuda.conf
+  blockinfile:
+    path: /etc/ld.so.conf.d/cuda.conf
+    block: | 
+      /usr/local/cuda-5.5/lib
+      /usr/local/cuda-5.5/lib64
+    create: yes
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+    - linker_search_path.stdout == ''
+  tags: cuda_55_config
+
+- name: Run Idconfg file
+  shell: ldconfig
+  when:
+    - (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
+    - ansible_architecture == "x86_64"
+    - ansible_distribution_major_version == "6"
+  tags: cuda_55_config
+
+- name: Clean up downloaded packages
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /tmp/cuda_55_linux-run
+    - /usr/bin/nvvs
+  ignore_errors: yes
+  tags: 
+    [ nvidia_cuda_toolkit_55, gdk_75_package ]
+

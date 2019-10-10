@@ -1,0 +1,10 @@
+---
+##########
+# RedHat #
+##########
+
+# Command Build Tool Packages
+Additional_Build_Tools_RHEL6_PPC64:
+  - glibc.ppc
+  - glibc-devel.ppc
+  - libstdc++-devel.ppc

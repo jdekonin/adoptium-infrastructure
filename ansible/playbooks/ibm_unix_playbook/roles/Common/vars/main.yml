@@ -1,0 +1,19 @@
+---
+########
+# Main #
+########
+
+########################
+# Include OS variables #
+########################
+- name: Include OS variables
+  include_vars: "../vars/{{ ansible_distribution }}.yml"
+  tags: main
+
+##############################
+# OS setup and configuration #
+##############################
+# If this errors, upgrade ansible to >=2.4
+- name: Perform OS setup and configuration
+  include_tasks: "{{ ansible_distribution }}.yml"
+  tags: main

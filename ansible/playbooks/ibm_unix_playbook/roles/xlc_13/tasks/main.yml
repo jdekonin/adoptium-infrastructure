@@ -1,0 +1,46 @@
+---
+###################
+# XLC 13 #
+###################
+
+- name: Check if XLC 13 is aready installed 
+  stat: 
+      path: /opt/ibm/xlC/13.1.0/bin/xlc
+  register: xlc13_installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "ppc64"
+  tags: xlc_13_package
+
+- name: Create a xlc13 directory in tmp to temporarily store the tar files
+  file: path=/tmp/xlc13 state=directory
+  tags: xlc_13_package 
+
+- name: Extract XL_C_C_FOR_LINUX_13.1.6_PRODUCT.tar.gz into /tmp/xlc13
+  unarchive:
+    src: /Vendor_Files/ppc64/XL_C_C_FOR_LINUX_13.1.6_PRODUCT.tar.gz
+    dest: /tmp/xlc13
+    mode: u+x
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "ppc64"
+    - xlc13_installed.stat.exists == False
+  tags: xlc_13_package
+
+- name: Install XLC 13
+  shell: printf 'yes\nyes\n1\nyes\n' | /tmp/xlc13/install
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_architecture == "ppc64"
+    - xlc13_installed.stat.exists == False
+  tags: xlc_13_package
+
+- name: Clean up downloaded packages
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /tmp/xlc13
+  ignore_errors: yes
+  tags: xlc_13_package
+

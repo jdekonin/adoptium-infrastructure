@@ -1,0 +1,15 @@
+---
+##########
+# RedHat #
+##########
+
+##########################
+# Additional build tools #
+##########################
+- name: Install additional build tools for RHEL 6 on ppc64
+  package: "name={{ item }} state=latest"
+  with_items: "{{ Additional_Build_Tools_RHEL6_PPC64 }}"
+  when:
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "ppc64"
+  tags: build_tools

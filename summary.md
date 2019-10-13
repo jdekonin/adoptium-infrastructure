@@ -1,8 +1,8 @@
 | OS | VERSION | ARCH | BUILD TYPE | NUMBER |
 | --- | --- | --- | --- | --- |
-|ubuntu|18|x86|Test|4|
 |ubuntu|16|x86|Test|4|
 |windows|2016|x86|Build|12|
+|ubuntu|18|x86|Test|3|
 |zos|2.2|z13|Build and Test|1|
 |rhel|7|ppc64le|Build and Test|6|
 |windows|2016|x86|Build and Test|12|

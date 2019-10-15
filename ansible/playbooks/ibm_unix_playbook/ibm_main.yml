@@ -17,6 +17,7 @@
   #########
   roles:
     - gcc_7
+    - gcc_7.4.0
     - NVidia_Cuda_Toolkit_55
     - xlc_13
     - Java8

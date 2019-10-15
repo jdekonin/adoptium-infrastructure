@@ -1,0 +1,46 @@
+---
+###################
+# gcc-7.4.0 #
+###################
+
+- name: Check if gcc-7.4.0 is already installed 
+  stat: 
+      path: /usr/local/gcc-7.4.0
+  register: gcc_7_installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "s390x"
+  tags: gcc_7_package
+  
+- name: Extract gcc-7.4.0.tar into /usr/local
+  unarchive:
+    src: /Vendor_Files/s390/gcc-7.4.0/gcc-7.4.0.tar
+    dest: /usr/local
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "s390x"
+    - gcc_7_installed.stat.exists == False
+  tags: gcc_7_package
+  
+- name: Check if binutils-2.28 is already installed 
+  stat: 
+      path: /usr/local/binutils-2.28
+  register: binutils_installed
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "s390x"
+  tags: gcc_7_package
+  
+- name: Extract binutils-2.28.tar into /usr/local
+  unarchive:
+    src: /Vendor_Files/s390/gcc-7.4.0/binutils-2.28.tar
+    dest: /usr/local
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "6"
+    - ansible_architecture == "s390x"
+    - binutils_installed.stat.exists == False
+  tags: gcc_7_package  

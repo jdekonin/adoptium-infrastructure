@@ -42,8 +42,8 @@
     - ../AdoptOpenJDK_Unix_Playbook/roles/Python3_Source
     - ../AdoptOpenJDK_Unix_Playbook/roles/ccache
     - {role: ../AdoptOpenJDK_Unix_Playbook/roles/nasm, when: ansible_architecture == 'x86_64'} # OpenJ9
-    - ../AdoptOpenJDK_Unix_Playbook/roles/adoptopenjdk11              # JDK12 build bootstrap
-    - ../AdoptOpenJDK_Unix_Playbook/roles/adoptopenjdk12              # JDK13 build bootstrap
+    - role: ../AdoptOpenJDK_Unix_Playbook/roles/adoptopenjdk_install
+      jdk_version: 13
     - ../AdoptOpenJDK_Unix_Playbook/roles/Protobuf
     - ../AdoptOpenJDK_Unix_Playbook/roles/OpenSSL102                  # OpenJ9
     - ../AdoptOpenJDK_Unix_Playbook/roles/Clean_Up
